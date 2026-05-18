@@ -43,13 +43,14 @@ def biz():
                         "error": "too_many_requests",
                         "qps_limit": QPS_LIMIT,
                         "hits_last_1s": hits_last_1s,
+                        "num": os.environ.get("NUM", "-1")
                     }
                 ),
                 429,
             )
 
     time.sleep(max(SLEEP_MS, 0) / 1000.0)
-    return jsonify({"ok": True, "slept_ms": max(SLEEP_MS, 0)})
+    return jsonify({"ok": True, "num": os.environ.get("NUM", "-1"), "slept_ms": max(SLEEP_MS, 0)})
 
 
 @app.get("/healthz")
@@ -59,7 +60,7 @@ def healthz():
         _trim(now, WINDOW_10S)
         hits_last_10s = len(_biz_hits)
 
-    return jsonify({"status": "ok", "biz_requests_last_10s": hits_last_10s})
+    return jsonify({"status": "ok","num": os.environ.get("NUM", "-1"), "biz_requests_last_10s": hits_last_10s})
 
 
 if __name__ == "__main__":
